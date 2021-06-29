@@ -51,7 +51,25 @@
       alert(`${color == 2 ? "✖️" : "⚪️"} wins`);
     }
     color = 3 - color;
+
+    if (color == 2) {
+      computerMove();
+    }
     show();
+    if (willWin(pattern, color)) {
+      console.log(`${color == 2 ? "✖️" : "⚪️"} will win`);
+    }
+  }
+
+  function computerMove() {
+    let choice = bestChoice(pattern, color);
+    if (choice.point) {
+      pattern[choice.point[1]][choice.point[0]] = color;
+    }
+    if (check(pattern, color)) {
+      alert(`${color == 2 ? "✖️" : "⚪️"} wins`);
+    }
+    color = 3 - color;
   }
 
   function check(pattern, color) {
@@ -65,10 +83,10 @@
       }
       if (win) return true;
     }
-    for (let j = 0; j < 3; j++) {
+    for (let i = 0; i < 3; i++) {
       let win = true;
-      for (let i = 0; i < 3; i++) {
-        if (pattern[i][j] !== color) {
+      for (let j = 0; j < 3; j++) {
+        if (pattern[j][i] !== color) {
           win = false;
           break;
         }
@@ -97,6 +115,66 @@
     }
 
     return false;
+  }
+
+  function clone(pattern) {
+    return JSON.parse(JSON.stringify(pattern));
+  }
+
+  function willWin(pattern, color) {
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (pattern[i][j] !== 0) continue;
+        let tmp = clone(pattern);
+        tmp[i][j] = color;
+        if (check(tmp, color)) {
+          return [j, i];
+        }
+      }
+    }
+    return null;
+  }
+
+  let openings = new Map();
+  openings.set(
+    [
+      [0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0],
+    ].toString,
+    { point: [1, 1], result: 0 }
+  );
+
+  function bestChoice(pattern, color) {
+    if (openings.has(pattern.toString())) {
+      return openings.get(pattern.toString());
+    }
+    let point = willWin(pattern, color);
+    if (point) {
+      return {
+        point,
+        result: 1,
+      };
+    }
+    let result = -1;
+    outer: for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (pattern[i][j] !== 0) continue;
+        let tmp = clone(pattern);
+        tmp[i][j] = color;
+        let opp = bestChoice(tmp, 3 - color);
+        if (0 - opp.result >= result) {
+          point = [j, i];
+          result = 0 - opp.result;
+        }
+        if (result == 1) break outer;
+      }
+    }
+
+    return {
+      point,
+      result: point ? result : 0,
+    };
   }
 
   show();
