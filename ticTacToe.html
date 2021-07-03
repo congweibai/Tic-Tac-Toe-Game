@@ -13,17 +13,27 @@
   }
 </style>
 
+<h1>Tic Tac Toe</h1>
+<div class="operations">
+  <button id="start-button">Retart</button>
+  <button id="mode-button">Two Player Mode</button>
+</div>
 <div id="board"></div>
 
 <script>
-  let pattern = [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0],
-  ];
-  console.log(pattern);
-
-  let color = 1;
+  let pattern, color;
+  let startButton = document.getElementById("start-button");
+  let modeButton = document.getElementById("mode-button");
+  let withComputer = true;
+  function start() {
+    pattern = [
+      [0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0],
+    ];
+    color = 1;
+    show();
+  }
 
   function show() {
     let board = document.getElementById("board");
@@ -52,7 +62,7 @@
     }
     color = 3 - color;
 
-    if (color == 2) {
+    if (color == 2 && withComputer) {
       computerMove();
     }
     show();
@@ -177,5 +187,18 @@
     };
   }
 
-  show();
+  function switchMode() {
+    if (withComputer) {
+      withComputer.innerText = "Two Player Mode";
+      withComputer = false;
+    } else {
+      withComputer.innerText = "VS Computer";
+      withComputer = true;
+    }
+    start();
+  }
+
+  startButton.addEventListener("click", start);
+  modeButton.addEventListener("click", switchMode);
+  start();
 </script>
