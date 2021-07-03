@@ -14,6 +14,7 @@
 </style>
 
 <h1>Tic Tac Toe</h1>
+<div>Current mode: <span id="mode-title">VS Computer</span></div>
 <div class="operations">
   <button id="start-button">Retart</button>
   <button id="mode-button">Two Player Mode</button>
@@ -24,6 +25,7 @@
   let pattern, color;
   let startButton = document.getElementById("start-button");
   let modeButton = document.getElementById("mode-button");
+  let modeTitle = document.getElementById("mode-title");
   let withComputer = true;
   function start() {
     pattern = [
@@ -189,10 +191,12 @@
 
   function switchMode() {
     if (withComputer) {
-      withComputer.innerText = "Two Player Mode";
+      modeButton.innerText = "VS Computer";
+      modeTitle.innerText = "Two Player";
       withComputer = false;
     } else {
-      withComputer.innerText = "VS Computer";
+      modeButton.innerText = "Two Player Mode";
+      modeTitle.innerText = "VS Computer";
       withComputer = true;
     }
     start();
